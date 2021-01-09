@@ -1,6 +1,6 @@
 NAME	=	pathfinder
 
-FLAG	=	-std=c11 -Wall -Wextra -Werror -Wpedantic
+FLAG	=	-std=c11 -Wall -Wextra -Werror -Wpedantic #-fsanitize=address -fno-omit-frame-pointer
 
 SRCD	=	src
 INCD	=	inc
@@ -12,7 +12,7 @@ LMXI	:=	libmx/inc
 INC		=	pathfinder.h
 INCS	=	$(addprefix $(INCD)/, $(INC))
 
-SRC		= 	main.c check.c parse.c
+SRC		= 	main.c check.c parse.c algorithm.c output.c
 
 SRCS	=	$(addprefix $(SRCD)/, $(SRC))
 OBJS	=	$(addprefix $(OBJD)/, $(SRC:%.c=%.o))

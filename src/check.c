@@ -15,13 +15,30 @@ bool checkword(const char *word) {
     return true;
 }
 
-bool correct_line(const char *from, const char *to, const char *dist) {
+bool checkline(const char *from, const char *to, const char *dist) {
     if (!from || !to || !dist) return false;
+    //mx_printstr(from);
     if(!checkword(from)) return false;
+    //mx_printstr(to);
     if(!checkword(to)) return false;
+    //mx_printstr(dist);
     if(!checknum(dist)) return false;
+    //mx_printstr("fine");
 
     if (mx_strcmp(from, to) == 0) return false;
 
     return true;
+}
+
+void checklast(char *str) {
+    int num_n = 0;
+    for(int i = 0; i < mx_strlen(str)-1; i++) {
+        if(str[i] == '\n') num_n++;
+        if(str[i] == '\n' && !mx_isalpha(str[i+1])) {
+            mx_printerr("error: line ");
+            mx_printerr(mx_itoa(num_n+1)); 
+            mx_printerr(" is not valid\n");
+            exit(0);
+        }
+    }
 }

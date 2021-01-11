@@ -156,11 +156,12 @@ int amount_of_el(char **arr) {
 }
 
 int amount_of_num(int num) {
-    int cpy_num = num;
+    int temp = num;
     int res = 0;
-    do {
+    while (temp  != 0) {
+        temp /= 10;
         res++;
-        cpy_num /=10;
-    } while (cpy_num  != 0);
-    return res;
+    }
+    return ++res;
 }
+

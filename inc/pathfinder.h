@@ -34,7 +34,7 @@ void sort_path_names(char **path, char **islands, unsigned long size);
 int amount_of_num(int num);
 int amount_of_el(char **arr);
 
-void way_to_str(Node **res_paths, char **path, int size_path);
+void convert(Node **ways, char **path, int s);
 int get_index_in_strarr(char **arr, char *sub);
 void print_path(char *path, int **matrix, char **islands);
 

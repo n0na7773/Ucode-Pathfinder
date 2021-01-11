@@ -131,54 +131,58 @@ void parse(const char *filename) {
     }
 
     //A*
-    int size_path = 0;
+    int s = 0;
     for(int i = 0; i < num; i++) {
         for(int j = i; j < num; j++) {
             if(i != j) {                
                 Node **a = pathfinder(matrix, islands, i, j, num);
                 for(int k = 0; a[k] != NULL; k++) {
-                    size_path++;
+                    s++;
                 } 
             }
         }   
     }
 
-    Node **res_paths = (Node **) malloc((size_path + 1) * sizeof(Node *));
-    for(int j = 0; j < size_path; j++) res_paths[j] = NULL;
+    Node **ways = (Node **)malloc(sizeof(Node *) * (s + 1));
+    for(int i = 0; i < s; i++) {
+        ways[i] = NULL;
+    }
     
-    size_path = 0;
+    s = 0;
     for(int i = 0; i < num; i++) {
         for(int j = i; j < num; j++) {
             if(i != j) {
                 Node **a = pathfinder(matrix, islands, i, j, num);
                 for(int j = 0; a[j] != NULL; j++) {
-                    res_paths[size_path] = (Node*)malloc(sizeof(Node));
-                    res_paths[size_path] = a[j];
-                    size_path++;
+                    ways[s] = (Node*)malloc(sizeof(Node));
+                    ways[s] = a[j];
+                    s++;
                 }
             }
         }   
     }   
 
-    char **path = (char **)malloc((size_path*size_path)*sizeof(char));
-    way_to_str(res_paths, path, size_path);
+    char **path = (char **)malloc(sizeof(char) * (s * s));
+    
+    convert(ways, path, s);
 
-    int size_one_way = 0;
-    char **res = (char **)malloc((__INT_MAX__/100)*sizeof(char));
-    for(int j = 0; j < num; j++){
-        for(int z = j; z < num; z++){
-            for(int a = 0; a < size_path; a++){
-                char **tmp_without_num = mx_strsplit(path[a], '|');
-                char **tmp = mx_strsplit(tmp_without_num[0], ',');
-                if(mx_strcmp(tmp[0], islands[j]) == 0 && mx_strcmp(tmp[amount_of_el(tmp)-1], islands[z]) == 0){
-                    res[size_one_way] = mx_strdup(path[a]);
-                    size_one_way++;
+    int row_size = 0;
+    char **res = (char **)malloc(sizeof(char) * (__INT_MAX__ / 100));
+    
+    for(int i = 0; i < num; i++){
+        for(int j = i; j < num; j++){
+            for(int k = 0; k < s; k++){
+                char **temp_without_num = mx_strsplit(path[k], '|');
+                char **temp = mx_strsplit(temp_without_num[0], ',');
+                if(mx_strcmp(temp[0], islands[i]) == 0 && mx_strcmp(temp[amount_of_el(temp)-1], islands[j]) == 0){
+                    res[row_size] = mx_strdup(path[k]);
+                    row_size++;
                 }
             }
-            if(size_one_way != 0){
-                sort_path_all(res, islands, matrix, (unsigned long)size_one_way);
+            if(row_size != 0){
+                sort_path_all(res, islands, matrix, (unsigned long)row_size);
             }
-            size_one_way = 0;
+            row_size = 0;
         }
     }
 

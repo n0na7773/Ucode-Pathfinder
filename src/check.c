@@ -17,13 +17,10 @@ bool checkword(const char *word) {
 
 bool checkline(const char *from, const char *to, const char *dist) {
     if (!from || !to || !dist) return false;
-    //mx_printstr(from);
+
     if(!checkword(from)) return false;
-    //mx_printstr(to);
     if(!checkword(to)) return false;
-    //mx_printstr(dist);
     if(!checknum(dist)) return false;
-    //mx_printstr("fine");
 
     if (mx_strcmp(from, to) == 0) return false;
 

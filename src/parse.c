@@ -30,10 +30,7 @@ void parse(const char *filename) {
         mx_printerr("error: line 1 is not valid\n");
         exit(0);
     }    
-    if (num < 1) {
-        mx_printerr("error: invalid number of islands\n");
-        exit(0);
-    }
+    
 
     //Splitted into lines with route and distance
     char **all = mx_strsplit(&file[mx_get_char_index(file, '\n')+1], '\n');
@@ -45,7 +42,18 @@ void parse(const char *filename) {
     char **islands = (char **)malloc((num*9)*2);
     for (int i = 0; i < num; i++) islands[i] = "NULL";
     for (int i = 0; i < lines; i++){
-        char *from = mx_strndup(all[i], mx_get_char_index(all[i], '-'));
+        char *from = mx_strndup(all[i], mx_get_char_index(all[i], '-'));               
+        char *to = mx_strndup(all[i] + mx_get_char_index(all[i], '-') + 1, mx_get_char_index(all[i], ',') - mx_strlen(from) - 1);    
+        char *dist = mx_strdup(all[i] + mx_get_char_index(all[i], ',') + 1);
+        
+        if(checkline(from, to, dist) == false) {
+            mx_printerr("error: line ");
+            mx_printerr(mx_itoa(i+2)); 
+            mx_printerr(" is not valid\n");
+            exit(0);
+        }
+
+        //from
         for (int j = 0; j < num; j++) {
             if (mx_strcmp(islands[j], "NULL") == 0) {               
                 islands[j] = mx_strdup(from);
@@ -55,11 +63,13 @@ void parse(const char *filename) {
                 break;
             }
             if (j == num - 1) {
+                checklast(file);
                 mx_printerr("error: invalid number of islands\n");
                 exit(0);
             }
-        }               
-        char *to = mx_strndup(all[i] + mx_get_char_index(all[i], '-') + 1, mx_get_char_index(all[i], ',') - mx_strlen(from) - 1);
+        }
+
+        //to
         for (int j = 0; j < num; j++) {
             if (mx_strcmp(islands[j], "NULL") == 0) {
                 islands[j] = mx_strdup(to);
@@ -69,22 +79,21 @@ void parse(const char *filename) {
                 break;
             }
             if (j == num - 1) {
+                checklast(file);
                 mx_printerr("error: invalid number of islands\n");
                 exit(0);
             }
             
         }
-        char *dist = mx_strdup(all[i] + mx_get_char_index(all[i], ',') + 1);
-        
-        if(checkline(from, to, dist) == false) {
-            mx_printerr("error: line ");
-            mx_printerr(mx_itoa(i+2)); 
-            mx_printerr(" is not valid\n");
-            exit(0);
-        }
+
         route += mx_atoi(dist);        
     }
     checklast(file);
+
+    if (num < 1) {
+        mx_printerr("error: invalid number of islands\n");
+        exit(0);
+    }
 
     for (int i = 0; i < num; i++) {
         if (mx_strcmp(islands[i], "NULL") == 0) {
@@ -164,6 +173,7 @@ void parse(const char *filename) {
 
     char **path = (char **)malloc(sizeof(char) * (s * s));
     
+    //Convert to str
     convert(ways, path, s);
 
     int row_size = 0;
@@ -174,41 +184,15 @@ void parse(const char *filename) {
             for(int k = 0; k < s; k++){
                 char **temp_without_num = mx_strsplit(path[k], '|');
                 char **temp = mx_strsplit(temp_without_num[0], ',');
-                if(mx_strcmp(temp[0], islands[i]) == 0 && mx_strcmp(temp[amount_of_el(temp)-1], islands[j]) == 0){
+                if(mx_strcmp(temp[0], islands[i]) == 0 && mx_strcmp(temp[string_amount(temp)-1], islands[j]) == 0){
                     res[row_size] = mx_strdup(path[k]);
                     row_size++;
                 }
             }
             if(row_size != 0){
-                sort_path_all(res, islands, matrix, (unsigned long)row_size);
+                sorting(res, islands, matrix, (unsigned long)row_size);
             }
             row_size = 0;
         }
     }
-
-    /*for (int i = 0; i < num; i++) {
-        for(int j = 0; j < num; j++){
-            mx_printint(matrix[i][j]);
-            mx_printchar('\t'); 
-        }
-        mx_printstr("\n");   
-    }
-    for (int i = 0; i < num; i++){
-        mx_printstr(islands[i]);
-        mx_printstr("\n=======\n");
-    }*/
-    
-    //DON`T FORGET TO DO ALL ERROR HANDLINGS
-
-    /*
-    usage: ./pathfinder [filename]           +
-    error: file [filename] does not exist    +
-    error: file [filename] is empty          +
-    error: line 1 is not valid               +
-    error: line [line_number] is not valid   +
-    error: invalid number of islands         +
-    error: duplicate bridges                 +
-    error: sum of bridges lengths is too big +
-    */
-
 }

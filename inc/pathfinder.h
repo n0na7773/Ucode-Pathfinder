@@ -29,10 +29,9 @@ bool checkword(const char *word);
 bool checkline(const char *from, const char *to, const char *dist);
 void checklast(char *str);
 
-void sort_path_all(char **path, char **islands, int **arr, unsigned long size);
-void sort_path_names(char **path, char **islands, unsigned long size);
-int amount_of_num(int num);
-int amount_of_el(char **arr);
+void sorting(char **path, char **islands, int **arr, unsigned long size);
+
+int string_amount(char **arr);
 
 void convert(Node **ways, char **path, int s);
 int get_index_in_strarr(char **arr, char *sub);
